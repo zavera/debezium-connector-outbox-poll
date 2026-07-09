@@ -9,25 +9,17 @@
     <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Debezium Outbox Poll Connector</name>
-    <description>Database-agnostic outbox polling connector using sort-merge diff detection</description>
+    <name>Debezium Outbox Poll Agent</name>
+    <description>Zero-broker, JVM-only outbox polling agent using sort-merge diff detection. No Kafka, no Connect framework -- writes to debezium_outbox and stops there.</description>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kafka.version>3.7.0</kafka.version>
         <junit.version>5.10.2</junit.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>connect-api</artifactId>
-            <version>${kafka.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
