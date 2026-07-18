@@ -27,7 +27,7 @@ public final class OutboxPollAgent {
 
     public OutboxPollAgent(AgentConfig config) throws SQLException {
         this.connection = DriverManager.getConnection(config.jdbcUrl(), config.jdbcUser(), config.jdbcPassword());
-        SweepEngine sweepEngine = new SweepEngine(connection, config.tableName(), config.tableIdColumn(), config.scanFetchSize());
+        SweepEngine sweepEngine = new SweepEngine(connection, config.tableName(), config.tableIdColumn(), config.scanFetchSize(), config.outboxRetentionDays());
         this.scheduler = new PollingScheduler(sweepEngine, config.pollIntervalMs());
     }
 

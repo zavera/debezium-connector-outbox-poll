@@ -10,7 +10,8 @@ public record AgentConfig(
         String tableName,
         String tableIdColumn,
         long pollIntervalMs,
-        int scanFetchSize) {
+        int scanFetchSize,
+        int outboxRetentionDays) {
 
     public static AgentConfig fromProperties(Properties props) {
         return new AgentConfig(
@@ -20,7 +21,8 @@ public record AgentConfig(
                 require(props, "table.name"),
                 props.getProperty("table.id.column", "id"),
                 Long.parseLong(props.getProperty("poll.interval.ms", "5000")),
-                Integer.parseInt(props.getProperty("scan.fetch.size", "1000")));
+                Integer.parseInt(props.getProperty("scan.fetch.size", "1000")),
+                Integer.parseInt(props.getProperty("outbox.retention.days", "7")));
     }
 
     private static String require(Properties props, String key) {

@@ -61,7 +61,7 @@ class OutboxRecoveryTest {
             statement.execute("INSERT INTO watched VALUES (1, 10), (2, 20)");
         }
 
-        SweepEngine sweepEngine = new SweepEngine(connection, "watched", "id", 100);
+        SweepEngine sweepEngine = new SweepEngine(connection, "watched", "id", 100, 7);
         sweepEngine.sweep();
         assertThat(sweepEngine.currentBaseline().size()).isEqualTo(2);
 

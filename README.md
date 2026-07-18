@@ -34,6 +34,7 @@ table.name=orders
 table.id.column=id
 poll.interval.ms=5000
 scan.fetch.size=1000
+outbox.retention.days=7
 ```
 
 ## Why

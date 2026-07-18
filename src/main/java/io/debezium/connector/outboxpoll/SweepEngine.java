@@ -19,16 +19,20 @@ public final class SweepEngine {
     private final String tableName;
     private final String idColumn;
     private final int fetchSize;
+    private final int outboxRetentionDays;
     private final OutboxRecovery recovery;
+    private final OutboxMaintenance maintenance;
 
     private volatile Baseline baseline = Baseline.empty();
 
-    public SweepEngine(Connection connection, String tableName, String idColumn, int fetchSize) {
+    public SweepEngine(Connection connection, String tableName, String idColumn, int fetchSize, int outboxRetentionDays) {
         this.connection = connection;
         this.tableName = tableName;
         this.idColumn = idColumn;
         this.fetchSize = fetchSize;
+        this.outboxRetentionDays = outboxRetentionDays;
         this.recovery = new OutboxRecovery(connection);
+        this.maintenance = new OutboxMaintenance(connection);
     }
 
     public synchronized void sweep() {
@@ -44,6 +48,8 @@ public final class SweepEngine {
         catch (SQLException e) {
             throw new IllegalStateException("Sweep failed for table " + tableName, e);
         }
+
+        maintenance.purge(outboxRetentionDays);
     }
 
     public Baseline currentBaseline() {
