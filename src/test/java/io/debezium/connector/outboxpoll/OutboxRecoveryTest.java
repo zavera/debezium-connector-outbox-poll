@@ -1,6 +1,7 @@
 package io.debezium.connector.outboxpoll;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,6 +25,19 @@ class OutboxRecoveryTest {
     @AfterEach
     void tearDown() throws SQLException {
         connection.close();
+    }
+
+    @Test
+    void unrelatedSqlErrorPropagatesInsteadOfBeingMisreadAsTableMissing() throws SQLException {
+        OutboxRecovery recovery = new OutboxRecovery(connection);
+        connection.close();
+
+        // a closed connection raises a SQLState unrelated to "table missing" --
+        // must surface as a real failure, not be silently treated as
+        // "recreate the table"
+        assertThatThrownBy(recovery::outboxExists)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("Failed to check debezium_outbox existence");
     }
 
     @Test

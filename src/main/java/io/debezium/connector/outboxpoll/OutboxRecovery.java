@@ -31,8 +31,23 @@ public final class OutboxRecovery {
             return true;
         }
         catch (SQLException e) {
-            return false;
+            if (isTableMissing(e)) {
+                return false;
+            }
+            // an unrelated error (connectivity, permissions, ...) must not be
+            // misread as "table missing" -- that would trigger a spurious
+            // CREATE TABLE attempt and mask the real failure
+            throw new IllegalStateException("Failed to check debezium_outbox existence", e);
         }
+    }
+
+    private static boolean isTableMissing(SQLException e) {
+        // 42P01 (PostgreSQL "undefined_table", verified against a live
+        // instance), 42S02 (MySQL/MariaDB "table not found"), and 42S04 (H2
+        // "table not found", verified empirically -- H2 does not use 42S02
+        // despite modelling much of its error catalog on MySQL).
+        String sqlState = e.getSQLState();
+        return "42P01".equals(sqlState) || "42S02".equals(sqlState) || "42S04".equals(sqlState);
     }
 
     public void recreateOutbox() {

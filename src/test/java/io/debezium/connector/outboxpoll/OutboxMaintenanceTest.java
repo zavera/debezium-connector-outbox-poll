@@ -21,8 +21,8 @@ class OutboxMaintenanceTest {
 
     private static final String INSERT_SQL = """
             INSERT INTO debezium_outbox
-                (id, row_id, new_checksum, event_type, payload, idempotency_key, detected_at, consumed_at)
-            VALUES (?, ?, ?, 'INSERT', '{}', 'k', ?, ?)
+                (id, row_id, new_checksum, event_type, generation, payload, idempotency_key, detected_at, consumed_at)
+            VALUES (?, ?, ?, 'INSERT', 0, '{}', 'k', ?, ?)
             """;
 
     private Connection connection;
